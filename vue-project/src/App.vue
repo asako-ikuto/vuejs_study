@@ -1,17 +1,9 @@
 <template>
-  <div>
-    <p>
-      {{ msg }}
-    </p>
-  </div>
+  <h2>Hello World！！</h2>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      msg: "Hello World！！",
-    };
-  },
-};
 </script>
+
+<style>
+</style>
