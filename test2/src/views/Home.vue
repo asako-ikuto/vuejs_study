@@ -26,19 +26,19 @@
           <div class="mt-2">
             <div class="select is-small">
               <select v-model="birthdayYear">
-                <option v-for="year in 22" :key="year">{{ year + 1966 }}年(昭和{{ year + 41 }})</option>
-                <option v-for="year in 12" :key="year">{{ year + 1988 }}年(平成{{ year }})</option>
+                <option v-for="year in 22" :key="`year1-${year}`">{{ year + 1966 }}年(昭和{{ year + 41 }})</option>
+                <option v-for="year in 12" :key="`year2-${year}`">{{ year + 1988 }}年(平成{{ year }})</option>
               </select>
             </div>年
             
             <div class="select is-small">
               <select v-model.number="birthdayMonth">
-                <option v-for="month in 12" :key="month">{{ month }}</option>
+                <option v-for="month in 12" :key="`month-${month}`">{{ month }}</option>
               </select>
             </div>月
             <div class="select is-small">
               <select v-model.number="birthdayDay">
-                <option v-for="day in 31" :key="day">{{ day }}</option>
+                <option v-for="day in 31" :key="`day-${day}`">{{ day }}</option>
               </select>
             </div>日
           </div>
