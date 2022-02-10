@@ -58,9 +58,9 @@ export default {
   data() {
     return {
       // 生年月日初期値
-      birthdayYear:'1990年(平成2)',
-      birthdayMonth:'1',
-      birthdayDay:'1',
+      birthdayYear: '1990年(平成2)',
+      birthdayMonth: '1',
+      birthdayDay: '1',
     };
   },
 }

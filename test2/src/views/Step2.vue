@@ -65,16 +65,16 @@ export default {
   data() {
     return {
       //質問非表示
-      question2Visible:false,
-      question3Visible:false,
+      question2Visible: false,
+      question3Visible: false,
     };
   },
   methods: {
     showQuestion2() {
-      this.question2Visible=true;
+      this.question2Visible = true;
     },
     showQuestion3() {
-      this.question3Visible=true;
+      this.question3Visible = true;
     },
   },
 }
