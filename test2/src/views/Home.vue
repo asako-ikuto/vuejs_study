@@ -61,7 +61,7 @@ export default {
   computed: {
     sex: {
       get() {
-        return this.$store.getters.confirm_sex
+        return this.$store.getters.sex
       },
       set(value) {
         this.$store.commit('set_sex', value)
@@ -69,7 +69,7 @@ export default {
     },
     birthdayYear: {
       get() {
-        return this.$store.getters.confirm_birthdayYear
+        return this.$store.getters.birthdayYear
       },
       set(value) {
         this.$store.commit('set_birthdayYear', value)
@@ -77,7 +77,7 @@ export default {
     },
     birthdayMonth: {
       get() {
-        return this.$store.getters.confirm_birthdayMonth
+        return this.$store.getters.birthdayMonth
       },
       set(value) {
         this.$store.commit('set_birthdayMonth', value)
@@ -85,7 +85,7 @@ export default {
     },
     birthdayDay: {
       get() {
-        return this.$store.getters.confirm_birthdayDay
+        return this.$store.getters.birthdayDay
       },
       set(value) {
         this.$store.commit('set_birthdayDay', value)

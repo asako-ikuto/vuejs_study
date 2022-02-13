@@ -33,7 +33,7 @@ export default {
   computed: {
     consulationDetails: {
       get() {
-        return this.$store.getters.confirm_consulationDetails
+        return this.$store.getters.consulationDetails
       },
       set(value) {
         this.$store.commit('set_consulationDetails', value)

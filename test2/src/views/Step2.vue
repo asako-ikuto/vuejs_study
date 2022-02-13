@@ -100,7 +100,7 @@ export default {
     },
     lifeInsurance: {
       get() {
-        return this.$store.getters.confirm_lifeInsurance
+        return this.$store.getters.lifeInsurance
       },
       set(value) {
         this.$store.commit('set_lifeInsurance', value)
@@ -108,7 +108,7 @@ export default {
     },
     hospitalization: {
       get() {
-        return this.$store.getters.confirm_hospitalization
+        return this.$store.getters.hospitalization
       },
       set(value) {
         this.$store.commit('set_hospitalization', value)
@@ -116,7 +116,7 @@ export default {
     },
     surgery: {
       get() {
-        return this.$store.getters.confirm_surgery
+        return this.$store.getters.surgery
       },
       set(value) {
         this.$store.commit('set_surgery', value)
