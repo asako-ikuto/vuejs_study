@@ -13,11 +13,11 @@
           <p class="has-text-info">-性別-</p>
           <div class="control mt-2">
             <label class="radio">
-              <input type="radio" value="male" name="sex">
+              <input type="radio" value="男性" name="sex" v-model="sex">
               男性
             </label>
             <label class="radio">
-              <input type="radio" value="female" name="sex">
+              <input type="radio" value="女性" name="sex" v-model="sex">
               女性
             </label>
           </div>
@@ -51,17 +51,46 @@
 
 <script>
 
-export default {
+export default {  
   name: 'Home',
   components: {
   },
   data() {
-    return {
-      // 生年月日初期値
-      birthdayYear: '1990年(平成2)',
-      birthdayMonth: '1',
-      birthdayDay: '1',
-    };
+    return {}
   },
+  computed: {
+    sex: {
+      get() {
+        return this.$store.getters.sex
+      },
+      set(value) {
+        this.$store.commit('set_sex', value)
+      }
+    },
+    birthdayYear: {
+      get() {
+        return this.$store.getters.birthdayYear
+      },
+      set(value) {
+        this.$store.commit('set_birthdayYear', value)
+      }
+    },
+    birthdayMonth: {
+      get() {
+        return this.$store.getters.birthdayMonth
+      },
+      set(value) {
+        this.$store.commit('set_birthdayMonth', value)
+      }
+    },
+    birthdayDay: {
+      get() {
+        return this.$store.getters.birthdayDay
+      },
+      set(value) {
+        this.$store.commit('set_birthdayDay', value)
+      }
+    }
+  }
 }
 </script>

@@ -13,11 +13,11 @@
           <p class="has-text-info">現在、生命保険に加入されていますか？</p>
           <div class="control mt-2">
             <label class="radio">
-              <input type="radio" name="life-insurance">
+              <input type="radio" name="life-insurance" value="はい" v-model="lifeInsurance" @click="hideQuestion23">
               はい
             </label>
             <label class="radio">
-              <input type="radio" name="life-insurance" @click="showQuestion2">
+              <input type="radio" name="life-insurance" value="いいえ" v-model="lifeInsurance" @click="showQuestion2">
               いいえ
             </label>
           </div>
@@ -25,11 +25,11 @@
             <p class="has-text-info mt-2">現在入院中ですか。または、最近3か月以内に医師の診察・検査の結果、入院・手術をすすめられたことはありますか？</p>
             <div class="control mt-2">
               <label class="radio">
-                <input type="radio" name="hospitalization">
+                <input type="radio" name="hospitalization" value="はい" v-model="hospitalization" @click="hideQuestion3">
                 はい
               </label>
               <label class="radio">
-                <input type="radio" name="hospitalization"  @click="showQuestion3">
+                <input type="radio" name="hospitalization"  value="いいえ" v-model="hospitalization" @click="showQuestion3">
                 いいえ
               </label>
             </div>
@@ -38,11 +38,11 @@
             <p class="has-text-info mt-2">過去5年以内に、病気やけがで、手術をうけたことまたは継続して7日以上の入院をしたことがありますか？</p>
             <div class="control mt-2">
               <label class="radio">
-                <input type="radio" name="surgery">
+                <input type="radio" name="surgery" value="はい" v-model="surgery">
                 はい
               </label>
               <label class="radio">
-                <input type="radio" name="surgery">
+                <input type="radio" name="surgery" value="いいえ" v-model="surgery">
                 いいえ
               </label>
             </div>
@@ -64,18 +64,64 @@ export default {
   },
   data() {
     return {
-      //質問非表示
-      question2Visible: false,
-      question3Visible: false,
     };
   },
   methods: {
     showQuestion2() {
-      this.question2Visible = true;
+      this.$store.commit('toggle_question2Visible', true)
+      this.$store.commit('set_hospitalization', '')
+      this.$store.commit('set_surgery', '')
     },
     showQuestion3() {
-      this.question3Visible = true;
+      this.$store.commit('toggle_question3Visible', true)
+      this.$store.commit('set_surgery', '')
     },
+    hideQuestion23() {
+      this.$store.commit('toggle_question2Visible', false)
+      this.$store.commit('toggle_question3Visible', false)
+      this.$store.commit('set_hospitalization', '')
+      this.$store.commit('set_surgery', '')
+    },
+    hideQuestion3() {
+      this.$store.commit('toggle_question3Visible', false)
+      this.$store.commit('set_surgery', '')
+    }
   },
+  computed: {
+    question2Visible: {
+      get() {
+        return this.$store.state.question2Visible
+      },
+    },
+    question3Visible: {
+      get() {
+        return this.$store.state.question3Visible
+      },
+    },
+    lifeInsurance: {
+      get() {
+        return this.$store.getters.lifeInsurance
+      },
+      set(value) {
+        this.$store.commit('set_lifeInsurance', value)
+      }
+    },
+    hospitalization: {
+      get() {
+        return this.$store.getters.hospitalization
+      },
+      set(value) {
+        this.$store.commit('set_hospitalization', value)
+      }
+    },
+    surgery: {
+      get() {
+        return this.$store.getters.surgery
+      },
+      set(value) {
+        this.$store.commit('set_surgery', value)
+      }
+    }
+  }
 }
 </script>
