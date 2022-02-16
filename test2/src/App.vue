@@ -1,61 +1,76 @@
 <template>
   <div id="app">
-    <nav class="globalnav has-background-light">
-      <div class="navbar-title ml-4 mt-3 mb-3">Sample App</div>
-      <div class="globalnav-end">
-        <a class="globalnav-end__content mr-2" href="#">ログイン</a>|
-        <a class="globalnav-end__content ml-2" href="#">新規登録</a>
-      </div>
-    </nav>
-    <router-view/>
+    <h2>ToDoリスト</h2>
+    <input type="radio" name="filter-status" value="all" v-model="filterStatus">すべて
+    <input type="radio" name="filter-status" value="working" v-model="filterStatus">作業中
+    <input type="radio" name="filter-status" value="finished" v-model="filterStatus">完了
+    <!-- タスク一覧 -->
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>コメント</th>
+          <th>状態</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(task, id) in tasks" :key="id">
+          <td>{{ id }}</td>
+          <td>{{ task.comment }}</td>
+          <td><button type="button" @click="toggleTaskStatus(id)">{{ task.status }}</button></td>
+          <td><button type="button" @click="deleteTask(id)">削除</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- 新規タスク追加 -->
+    <h3>新規タスクの追加</h3>
+    <input type="text" v-model="newTaskComment"><button type="button" @click="addTask(newTaskComment)" style="margin-left:4px;">追加</button>
   </div>
 </template>
 
 <style>
-.globalnav {
-  border-bottom: #686567 solid 1px;
-  position: relative;
-}
-
-.globalnav-end {
-  position: absolute;
-  top:0;
-  right:0;
-  font-size: 0.5rem;
-}
-
-.globalnav-end__content {
-  color:#4A4A4A;
-}
-
-.input-box {
-  position: relative;
-  margin:0 auto;
-  max-width: 700px;
-}
-
-.step-icon {
-  position: absolute;
-  top:0;
-  left:0;
-}
-
-.customer-information {
-  padding-top:5px;
-  padding-bottom:5px;
-  margin-top: 30px;
-  border: 1.5px solid #00d1b2;
-  border-radius: 3px 3px 0 0;
-}
-
-.customer-information__body {
-  border: 1.5px solid #00d1b2;
-  border-top:none;
-  border-radius: 0 0 3px 3px;
-  text-align: left;
-}
-
-.form-select {
-  display:inline;
-}
 </style>
+
+<script>
+
+export default {  
+  name: 'App',
+  components: {
+  },
+  data() {
+    return {
+      filterStatus: 'all',
+    }
+  },
+  computed: {
+    tasks() {
+      //作業中
+      if(this.filterStatus === 'working') {
+        return this.$store.getters.workingTasks
+      //完了
+      } else if(this.filterStatus === 'finished') {
+        return this.$store.getters.finishedTasks
+      //すべて
+      } else {
+        return this.$store.getters.allTasks
+      }
+    },  
+  },
+  methods: {
+    //タスクを追加する
+    addTask(newTaskComment) {
+      this.$store.commit('addTask', newTaskComment)
+      this.newTaskComment = ''
+    },
+    //タスクを削除する
+    deleteTask(id) {
+      this.$store.commit('deleteTask', id)
+    },
+    //タスクの状態を変更する
+    toggleTaskStatus(id) {
+      this.$store.commit('toggleTaskStatus', id)
+    }
+  }
+}
+
+</script>
