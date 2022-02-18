@@ -8,23 +8,23 @@ export default new Vuex.Store({
     //タスク初期値
     tasks: [],
   },
-  getters: {
-    //フィルタ後のタスクを返す
-    allTasks: (state) => state.tasks,
-    workingTasks: (state) => state.tasks.filter(task => task.status === '作業中'),
-    finishedTasks: (state) => state.tasks.filter(task => task.status === '完了')
-  },
   mutations: {
     //新規タスク追加
     addTask: (state, val) => {
       state.tasks.push({
+        taskId: state.tasks.length,
         comment: val,
         status: '作業中'
       })
     },
     //タスク削除
     deleteTask: (state, id) => {
+      //タスク削除
       state.tasks.splice(id, 1)
+      //taskIdの更新
+      state.tasks.forEach((task, index) => {
+        task.taskId = index
+      })
     },
     //タスクの状態の変更
     toggleTaskStatus: (state, id) => {

@@ -15,7 +15,7 @@
       </thead>
       <tbody>
         <tr v-for="(task, id) in tasks" :key="id">
-          <td>{{ id }}</td>
+          <td>{{ task.taskId }}</td>
           <td>{{ task.comment }}</td>
           <td><button type="button" @click="toggleTaskStatus(id)">{{ task.status }}</button></td>
           <td><button type="button" @click="deleteTask(id)">削除</button></td>
@@ -46,15 +46,15 @@ export default {
     tasks() {
       //作業中
       if(this.filterStatus === 'working') {
-        return this.$store.getters.workingTasks
+        return this.$store.state.tasks.filter(task => task.status === '作業中')
       //完了
       } else if(this.filterStatus === 'finished') {
-        return this.$store.getters.finishedTasks
+        return this.$store.state.tasks.filter(task => task.status === '完了')
       //すべて
       } else {
-        return this.$store.getters.allTasks
+        return this.$store.state.tasks
       }
-    },  
+    } 
   },
   methods: {
     //タスクを追加する
@@ -70,7 +70,7 @@ export default {
     toggleTaskStatus(id) {
       this.$store.commit('toggleTaskStatus', id)
     }
-  }
+  },
 }
 
 </script>
