@@ -8,6 +8,9 @@ export default new Vuex.Store({
     //タスク初期値
     tasks: [],
   },
+  getters: {
+    tasks: state => state.tasks
+  },
   mutations: {
     //新規タスク追加
     addTask: (state, val) => {

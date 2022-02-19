@@ -46,13 +46,13 @@ export default {
     tasks() {
       //作業中
       if(this.filterStatus === 'working') {
-        return this.$store.state.tasks.filter(task => task.status === '作業中')
+        return this.$store.getters.tasks.filter(task => task.status === '作業中')
       //完了
       } else if(this.filterStatus === 'finished') {
-        return this.$store.state.tasks.filter(task => task.status === '完了')
+        return this.$store.getters.tasks.filter(task => task.status === '完了')
       //すべて
       } else {
-        return this.$store.state.tasks
+        return this.$store.getters.tasks
       }
     } 
   },
