@@ -1,4 +1,4 @@
-# test2
+# social-tipping-app
 
 ## Project setup
 ```
