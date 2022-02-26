@@ -1,6 +1,5 @@
 <template>
   <div class="signup">
-    {{ this.db }}
     <p class="is-size-3 mt-5">新規登録画面</p>
     <!-- ログイン入力 -->
     <div class="login-input-area">
@@ -18,42 +17,70 @@
       </div>
     </div>
     <!--新規登録先のダッシュボードまだ未実装-->
-    <router-link to="/"><button class="button is-link is-outlined" @click="signUp(userName, email, password)">新規登録</button></router-link>
+    <router-link to="/"><button class="button is-link is-outlined" @click="signUp()">新規登録</button></router-link>
     <router-link to="/"><a class="has-text-link sign-up-link">ログインはこちらから</a></router-link>
   </div>
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
-const auth = getAuth();
-
-import { addDoc, collection } from 'firebase/firestore'
+import auth from '../main.js'
+import db from '../main.js'
 
 export default {
   name: 'signup',
   components: {
   },
+  data() {
+    return {
+      userName: '',
+      email: '',
+      password: ''
+    };
+  },
   methods: {
-    signUp(userName, email, password) {
-      return createUserWithEmailAndPassword(auth, email, password)
-        .then(userCredential => {
+    signUp() {
+
+      console.log(db)//何かしらオブジェクトとれてる
+      console.log(auth)//何かしらオブジェクトとれてる
+
+      //_main_js__WEBPACK_IMPORTED_MODULE_0__.default.createUserWithEmailAndPassword is not a function
+      auth.createUserWithEmailAndPassword(this.email, this.password)
+        .then((userCredential) => {
           const user = userCredential.user;
+          const uid = user.uid
 
-          if(user) {
-            const uid = user.uid
-            
-            const userInitialData = {
-              userName: userName
-            }
+          alert(uid) //ここ実行されていない
 
-            addDoc(collection(this.db, 'users', uid), userInitialData)
-          }
+            // this.db.collection('users').add({
+            //   uid: uid,
+            //   userName: userName
+            // })
+          })
+          .catch((error) => {
+            alert(error.message)
+          })
+
+      //テストコード(実行時に下記エラーコードが出てくる)
+      //_main_js__WEBPACK_IMPORTED_MODULE_0__.default.collection is not a function
+      db.collection("testsample").add({
+          first: "Ada",
+          last: "Lovelace",
+          born: 1815
         })
-        .catch(error => {
-          alert(error.message)
-          //エラー
-          //Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore
+        .then((docRef) => {
+            console.log("Document written with ID: ", docRef.id);
         })
+        .catch((error) => {
+            console.error("Error adding document: ", error);
+        });
+
+        
+      
+        
+
+        
+
+        
 
     }
   }

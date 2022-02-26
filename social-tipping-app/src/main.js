@@ -2,10 +2,16 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/firestore'
 
 Vue.config.productionTip = false
+
+// 下記を使用するとfirebase.initializeApp is not a functionというエラーが出た
+// const firebase = require("firebase");
+// // Required for side-effects
+// require("firebase/firestore");
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -17,12 +23,14 @@ const firebaseConfig = {
   appId: "1:207712721377:web:c26586d527f913a3bd5aa0"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore();
+firebase.initializeApp(firebaseConfig)
+
+const db = firebase.firestore()
+const auth = firebase.auth()
 
 export default {
-  firebaseApp,
-  db
+  db,
+  auth
 }
 
 new Vue({
