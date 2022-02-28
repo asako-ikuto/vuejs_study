@@ -23,8 +23,25 @@
 </template>
 
 <script>
-import auth from '../main.js'
-import db from '../main.js'
+//firebase初期化
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/firestore'
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyC3MWe1l1VCMmuny6ly0j6iLhfh2CMh3H8",
+  authDomain: "socialtippingapp.firebaseapp.com",
+  projectId: "socialtippingapp",
+  storageBucket: "socialtippingapp.appspot.com",
+  messagingSenderId: "207712721377",
+  appId: "1:207712721377:web:c26586d527f913a3bd5aa0"
+};
+
+firebase.initializeApp(firebaseConfig)
+
+const db = firebase.firestore()
+const auth = firebase.auth()
 
 export default {
   name: 'signup',
@@ -40,48 +57,26 @@ export default {
   methods: {
     signUp() {
 
-      console.log(db)//何かしらオブジェクトとれてる
-      console.log(auth)//何かしらオブジェクトとれてる
-
-      //_main_js__WEBPACK_IMPORTED_MODULE_0__.default.createUserWithEmailAndPassword is not a function
+      //ユーザ新規登録
       auth.createUserWithEmailAndPassword(this.email, this.password)
         .then((userCredential) => {
+          //uid取得
           const user = userCredential.user;
           const uid = user.uid
 
-          alert(uid) //ここ実行されていない
+          //ユーザネームをfirestoreに登録
+          const uidRef = db.collection('users').doc(uid)
 
-            // this.db.collection('users').add({
-            //   uid: uid,
-            //   userName: userName
-            // })
+          uidRef.set({
+            userName: this.userName
           })
-          .catch((error) => {
-            alert(error.message)
-          })
-
-      //テストコード(実行時に下記エラーコードが出てくる)
-      //_main_js__WEBPACK_IMPORTED_MODULE_0__.default.collection is not a function
-      db.collection("testsample").add({
-          first: "Ada",
-          last: "Lovelace",
-          born: 1815
+          .then(() => {
+              console.log("Document successfully written!");
+            })
+            .catch((error) => {
+              console.error("Error adding document: ", error);
+            });
         })
-        .then((docRef) => {
-            console.log("Document written with ID: ", docRef.id);
-        })
-        .catch((error) => {
-            console.error("Error adding document: ", error);
-        });
-
-        
-      
-        
-
-        
-
-        
-
     }
   }
 }
