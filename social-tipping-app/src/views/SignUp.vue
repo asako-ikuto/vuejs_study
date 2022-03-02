@@ -23,8 +23,6 @@
 </template>
 
 <script>
-import {db, auth} from '../main.js'
-
 export default {
   name: 'signup',
   components: {
@@ -38,26 +36,7 @@ export default {
   },
   methods: {
     signUp() {
-      //ユーザ新規登録
-      auth.createUserWithEmailAndPassword(this.email, this.password)
-        .then((userCredential) => {
-          //uid取得
-          const user = userCredential.user;
-          const uid = user.uid
-
-          //ユーザネームをfirestoreに登録
-          const uidRef = db.collection('users').doc(uid)
-
-          uidRef.set({
-            userName: this.userName
-          })
-          .then(() => {
-              console.log("Document successfully written!");
-            })
-            .catch((error) => {
-              console.error("Error adding document: ", error);
-            });
-        })
+      this.$store.dispatch('signUpUser', {userName: this.userName, email: this.email, password: this.password})
     }
   }
 }
