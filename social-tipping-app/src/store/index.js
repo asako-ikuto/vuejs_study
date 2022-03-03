@@ -7,10 +7,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    email: '',
+    password: '',
     userUid: ''
   },
   mutations: {
-    setUserUid(state, payload) {
+    setUserData(state, payload) {
+      state.email = payload.email
+      state.password = payload.password
       state.userUid = payload.uid
     }
   },
@@ -33,7 +37,7 @@ export default new Vuex.Store({
             console.error("Error adding document: ", error);
           });
 
-        commit('setUserUid', {uid: uid})
+        commit('setUserData', {email: payload.email, password: payload.password, uid: uid})
       })
     },
   },
