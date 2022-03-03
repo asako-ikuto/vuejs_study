@@ -10,20 +10,8 @@ export default new Vuex.Store({
     userUid: ''
   },
   mutations: {
-    registerUserName(state, payload) {
-
+    setUserUid(state, payload) {
       state.userUid = payload.uid
-
-      const uidRef = db.collection('users').doc(payload.uid)
-          uidRef.set({
-            userName: payload.userName
-          })
-          .then(() => {
-            console.log("Document successfully written!");
-          })
-          .catch((error) => {
-            console.error("Error adding document: ", error);
-          });
     }
   },
   actions: {
@@ -32,7 +20,20 @@ export default new Vuex.Store({
       .then((userCredential) => {
         const user = userCredential.user
         const uid = user.uid
-        commit('registerUserName', {uid: uid, userName: payload.userName})
+
+        //ユーザネームをfirestoreに登録
+        const uidRef = db.collection('users').doc(uid)  
+        uidRef.set({
+            userName: payload.userName
+          })
+          .then(() => {
+            console.log("Document successfully written!");
+          })
+          .catch((error) => {
+            console.error("Error adding document: ", error);
+          });
+
+        commit('setUserUid', {uid: uid})
       })
     },
   },
