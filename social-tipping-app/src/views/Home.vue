@@ -5,15 +5,15 @@
     <div class="login-input-area">
       <div>
         <label class="textbox-label">メールアドレス</label>
-        <input type="email" placeholder="E-mail">
+        <input type="email" placeholder="E-mail" v-model="email">
       </div>
       <div>
         <label class="textbox-label">パスワード</label>
-        <input type="password" placeholder="Password">
+        <input type="password" placeholder="Password" v-model="password">
       </div>
     </div>
     <!--ログイン先のダッシュボードまだ未実装-->
-    <router-link to="/"><button class="button is-link is-outlined">ログイン</button></router-link>
+    <router-link to="/"><button class="button is-link is-outlined" @click="login()">ログイン</button></router-link>
     <router-link to="/sign-up"><a class="has-text-link sign-up-link">新規登録はこちらから</a></router-link>
   </div>
 </template>
@@ -22,7 +22,18 @@
 export default {
   name: 'Home',
   components: {
-    // HelloWorld
+  },
+  data() {
+    return {
+      userName: '',
+      email: '',
+      password: ''
+    };
+  },
+  methods: {
+    login() {
+      this.$store.dispatch('login', {email: this.email, password: this.password})
+    }
   }
 }
 </script>

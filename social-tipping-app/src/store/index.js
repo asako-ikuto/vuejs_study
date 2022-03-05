@@ -40,6 +40,14 @@ export default new Vuex.Store({
         commit('setUserData', {email: payload.email, password: payload.password, uid: uid})
       })
     },
+    login({commit}, payload) {
+      auth.signInWithEmailAndPassword(payload.email, payload.password)
+      .then((userCredential) => {
+        const user = userCredential.user
+        const uid = user.uid
+        commit('setUserData', {email: payload.email, password: payload.password, uid: uid})
+      })
+    }
   },
   modules: {
   }
