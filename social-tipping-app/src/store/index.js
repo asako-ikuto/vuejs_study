@@ -31,13 +31,16 @@ export default new Vuex.Store({
             userName: payload.userName
           })
           .then(() => {
-            console.log("Document successfully written!");
+            console.log('Document successfully written!')
           })
           .catch((error) => {
-            console.error("Error adding document: ", error);
-          });
+            console.error('Error adding document: ', error)
+          })
 
         commit('setUserData', {email: payload.email, password: payload.password, uid: uid})
+      })
+      .catch((error) => {
+        console.log('Error signup', error)
       })
     },
     login({commit}, payload) {
@@ -46,6 +49,9 @@ export default new Vuex.Store({
         const user = userCredential.user
         const uid = user.uid
         commit('setUserData', {email: payload.email, password: payload.password, uid: uid})
+      })
+      .catch((error) => {
+        console.error('Error login', error)
       })
     }
   },
