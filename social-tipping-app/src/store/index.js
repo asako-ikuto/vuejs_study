@@ -65,19 +65,19 @@ export default new Vuex.Store({
         //ユーザネームと投げ銭残高の取得
         const uidRef = db.collection('users').doc(uid)
         uidRef.get().then((doc) => {
-          if(doc.exists) {
 
-            const loginUserName = doc.data().userName
-            const loginUserAmount = doc.data().amount
-            console.log('Document data:', doc.data().userName);
-
-            commit('setUserData', {email: payload.email, password: payload.password, uid: uid, userName: loginUserName, amount: loginUserAmount})
-
-            //ダッシュボードに遷移
-            router.push('/dashboard')
-          } else {
+          if(!doc.exists) {
             console.log('No such document!')
+            return false
           }
+
+          const loginUserName = doc.data().userName
+          const loginUserAmount = doc.data().amount
+
+          commit('setUserData', {email: payload.email, password: payload.password, uid: uid, userName: loginUserName, amount: loginUserAmount})
+
+          //ダッシュボードに遷移
+          router.push('/dashboard')
         })
         .catch((error) => {
           console.log('Error getting document:', error)
