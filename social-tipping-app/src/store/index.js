@@ -68,7 +68,7 @@ export default new Vuex.Store({
 
           if(!doc.exists) {
             console.log('No such document!')
-            return false
+            return
           }
 
           const loginUserName = doc.data().userName
