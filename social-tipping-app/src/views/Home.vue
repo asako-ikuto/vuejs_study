@@ -12,8 +12,8 @@
         <input type="password" placeholder="Password" v-model="password">
       </div>
     </div>
-    <!--ログイン先のダッシュボードまだ未実装-->
-    <router-link to="/"><button class="button is-link is-outlined" @click="login()">ログイン</button></router-link>
+
+    <button class="button is-link is-outlined" @click="login()">ログイン</button>
     <router-link to="/sign-up"><a class="has-text-link sign-up-link">新規登録はこちらから</a></router-link>
   </div>
 </template>
