@@ -5,7 +5,7 @@
     </div>
     <div style="text-align:right">
       <p class="is-size-5 is-inline-block mr-2">残高：{{ this.$store.getters.amount }}</p>
-      <router-link to="/"><button class="button is-link is-outlined is-small">ログアウト</button></router-link>
+      <button class="button is-link is-outlined is-small" @click="logout()">ログアウト</button>
     </div>
     <p class="is-size-3 mt-5">ユーザー一覧</p>
     
@@ -22,6 +22,9 @@ export default {
     };
   },
   methods: {
+    logout() {
+      this.$store.dispatch('logout')
+    }
   }
 }
 </script>

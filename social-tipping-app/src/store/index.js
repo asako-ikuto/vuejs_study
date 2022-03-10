@@ -24,6 +24,13 @@ export default new Vuex.Store({
       state.userUid = payload.uid
       state.userName = payload.userName
       state.amount = payload.amount
+    },
+    resetUserData(state) {
+      state.email = ''
+      state.password = ''
+      state.userUid = ''
+      state.userName = ''
+      state.amount = ''
     }
   },
   actions: {
@@ -85,6 +92,19 @@ export default new Vuex.Store({
       })
       .catch((error) => {
         console.error('Error login', error)
+      })
+    },
+    logout({commit}) {
+      auth.signOut()
+      .then(() => {
+
+        commit('resetUserData')
+
+        //ログイン画面に遷移
+        router.push('/')
+      })
+      .catch((error) => {
+        console.log('Error logout:', error)
       })
     }
   },
