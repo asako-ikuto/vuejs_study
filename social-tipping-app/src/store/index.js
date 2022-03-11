@@ -11,11 +11,13 @@ export default new Vuex.Store({
     password: '',
     userUid: '',
     userName: '',
-    amount: ''
+    amount: '',
+    users: ''
   },
   getters: {
     userName: (state) => state.userName,
-    amount: (state) => state.amount
+    amount: (state) => state.amount,
+    otherUsers: (state) => state.users.filter(user => user.uid !== state.userUid)
   },
   mutations: {
     setUserData(state, payload) {
@@ -31,6 +33,10 @@ export default new Vuex.Store({
       state.userUid = ''
       state.userName = ''
       state.amount = ''
+      state.users = ''
+    },
+    setUsers(state, payload) {
+      state.users = payload.users
     }
   },
   actions: {
@@ -41,6 +47,8 @@ export default new Vuex.Store({
         const uid = user.uid
         const initialAmount = 1000
 
+        commit('setUserData', {email: payload.email, password: payload.password, uid: uid, userName: payload.userName, amount: initialAmount}) 
+
         //ユーザネームをfirestoreに登録
         const uidRef = db.collection('users').doc(uid)  
         uidRef.set({
@@ -48,16 +56,37 @@ export default new Vuex.Store({
             amount: initialAmount
           })
           .then(() => {
-            console.log('Document successfully written!')
+
+          //全てのユーザと残高を取得
+          db.collection('users')
+            .get()
+            .then((querySnapshot) => {
+
+              const allUsers = []
+
+              querySnapshot.forEach((doc) => {
+
+                const userData = {
+                  uid: doc.id,
+                  userName: doc.data().userName,
+                  amount: doc.data().amount
+                }
+
+                allUsers.push(userData)
+              })
+
+              commit('setUsers', {users: allUsers})
+
+              //ダッシュボードに遷移
+              router.push('/dashboard')
+            })
+            .catch((error) => {
+              console.log('Error getting users document:', error)
+            })
           })
           .catch((error) => {
             console.error('Error adding document: ', error)
-          })
-
-        commit('setUserData', {email: payload.email, password: payload.password, uid: uid, userName: payload.userName, amount: initialAmount})
-
-        //ダッシュボードに遷移
-        router.push('/dashboard')
+          }) 
       })
       .catch((error) => {
         console.log('Error signup', error)
@@ -82,13 +111,38 @@ export default new Vuex.Store({
           const loginUserAmount = doc.data().amount
 
           commit('setUserData', {email: payload.email, password: payload.password, uid: uid, userName: loginUserName, amount: loginUserAmount})
-
-          //ダッシュボードに遷移
-          router.push('/dashboard')
         })
         .catch((error) => {
           console.log('Error getting document:', error)
         })
+
+        //全てのユーザと残高を取得
+        db.collection('users')
+          .get()
+          .then((querySnapshot) => {
+
+            const allUsers = []
+
+            querySnapshot.forEach((doc) => {
+
+              const userData = {
+                uid: doc.id,
+                userName: doc.data().userName,
+                amount: doc.data().amount
+              }
+
+              allUsers.push(userData)
+              
+            })
+
+            commit('setUsers', {users: allUsers})
+
+            //ダッシュボードに遷移
+            router.push('/dashboard')
+          })
+          .catch((error) => {
+            console.log('Error getting users document:', error)
+          })
       })
       .catch((error) => {
         console.error('Error login', error)

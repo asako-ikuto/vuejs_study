@@ -44,10 +44,6 @@ const routes = [
         }
         next()
       })
-      .catch((error) => {
-        console.error('Error onAuthStateChanged:', error)
-      })
-
     }
   }
 ]
