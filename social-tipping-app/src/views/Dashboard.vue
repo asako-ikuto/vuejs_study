@@ -86,12 +86,19 @@ export default {
       this.$store.commit('setRecipientData', {recipientUid: recipientUid, recipientAmount: recipientAmount})
     },
     sendSocialTip() {
+      const sendingTipAmount = parseFloat(this.sendingTipAmount)
+      const recipientAmount = parseFloat(this.$store.getters.recipientAmount)
+      const amount = parseFloat(this.$store.getters.amount)
+
+      if(sendingTipAmount < 0 || sendingTipAmount > amount || isNaN(sendingTipAmount) || sendingTipAmount == ''){
+        return 
+      }
       this.isShowsendContent = false
-      this.$store.dispatch('sendSocialTip', {sendingTipAmount: this.sendingTipAmount, 
+      this.$store.dispatch('sendSocialTip', {sendingTipAmount: sendingTipAmount, 
                                              recipientUid: this.$store.getters.recipientUid,
-                                             recipientAmount: this.$store.getters.recipientAmount,  
+                                             recipientAmount: recipientAmount,  
                                              userUid: this.$store.getters.userUid,
-                                             amount: this.$store.getters.amount})
+                                             amount: amount})
       this.sendingTipAmount = ''
     }
   }

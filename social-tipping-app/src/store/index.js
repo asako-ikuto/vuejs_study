@@ -155,11 +155,11 @@ export default new Vuex.Store({
       })
     },
     sendSocialTip({commit}, payload) {
-      const sendingTipAmount = parseFloat(payload.sendingTipAmount)
+      const sendingTipAmount = payload.sendingTipAmount
       const recipientUid = payload.recipientUid
-      const recipientAmount = parseFloat(payload.recipientAmount)
+      const recipientAmount = payload.recipientAmount
       const userUid = payload.userUid
-      const amount = parseFloat(payload.amount)
+      const amount = payload.amount
       //更新予定の残高
       const updatedAmount = amount - sendingTipAmount
       const updatedRecipientAmount = recipientAmount + sendingTipAmount
