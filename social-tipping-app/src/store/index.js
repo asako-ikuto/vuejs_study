@@ -12,12 +12,17 @@ export default new Vuex.Store({
     userUid: '',
     userName: '',
     amount: '',
-    users: ''
+    users: '',
+    recipientUid: '',
+    recipientAmount: ''
   },
   getters: {
+    userUid: (state) => state.userUid,
     userName: (state) => state.userName,
     amount: (state) => state.amount,
-    otherUsers: (state) => state.users.filter(user => user.uid !== state.userUid)
+    otherUsers: (state) => state.users.filter(user => user.uid !== state.userUid),
+    recipientUid: (state) => state.recipientUid,
+    recipientAmount: (state) => state.recipientAmount
   },
   mutations: {
     setUserData(state, payload) {
@@ -37,6 +42,17 @@ export default new Vuex.Store({
     },
     setUsers(state, payload) {
       state.users = payload.users
+    },
+    setRecipientData(state, payload) {
+      state.recipientUid = payload.recipientUid
+      state.recipientAmount = payload.recipientAmount
+    },
+    updateAmount(state, payload) {
+      state.amount = payload.amount
+    },
+    resetRecipientData(state) {
+      state.recipientUid = ''
+      state.recipientAmount = ''
     }
   },
   actions: {
@@ -96,7 +112,6 @@ export default new Vuex.Store({
             console.log('No such document!')
             return
           }
-
           const loginUserName = doc.data().userName
           const loginUserAmount = doc.data().amount
           commit('setUserData', {email: payload.email, password: payload.password, uid: uid, userName: loginUserName, amount: loginUserAmount})
@@ -137,6 +152,48 @@ export default new Vuex.Store({
       })
       .catch((error) => {
         console.log('Error logout:', error)
+      })
+    },
+    sendSocialTip({commit}, payload) {
+      const sendingTipAmount = parseFloat(payload.sendingTipAmount)
+      const recipientUid = payload.recipientUid
+      const recipientAmount = parseFloat(payload.recipientAmount)
+      const userUid = payload.userUid
+      const amount = parseFloat(payload.amount)
+      //更新予定の残高
+      const updatedAmount = amount - sendingTipAmount
+      const updatedRecipientAmount = recipientAmount + sendingTipAmount
+
+      //自分の残高を反映
+      const uidRef = db.collection('users').doc(userUid)
+      uidRef.update({amount: updatedAmount})
+        .then(() => {
+          commit('updateAmount', {amount:updatedAmount })
+          //送付相手の残高を反映
+          const recipientUidRef = db.collection('users').doc(recipientUid)
+          recipientUidRef.update({amount: updatedRecipientAmount})
+            .then(() => {
+              commit('resetRecipientData')
+              //全てのユーザと残高を取得、更新
+                db.collection('users')
+                .get()
+                .then((querySnapshot) => {
+                  const allUsers = querySnapshot.docs.map(doc => {
+                    return {
+                      uid: doc.id,
+                      userName: doc.data().userName,
+                      amount: doc.data().amount
+                    }
+                  })
+                  commit('setUsers', {users: allUsers})
+                })
+                .catch((error) => {
+                  console.log('Error getting users document:', error)
+                })
+        })
+        .catch((error) => {
+          console.log('Error update document:', error)
+        })
       })
     }
   },
