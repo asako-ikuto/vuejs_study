@@ -56,27 +56,18 @@ export default new Vuex.Store({
             amount: initialAmount
           })
           .then(() => {
-
           //全てのユーザと残高を取得
           db.collection('users')
             .get()
             .then((querySnapshot) => {
-
-              const allUsers = []
-
-              querySnapshot.forEach((doc) => {
-
-                const userData = {
+              const allUsers = querySnapshot.docs.map(doc => {
+                return {
                   uid: doc.id,
                   userName: doc.data().userName,
                   amount: doc.data().amount
                 }
-
-                allUsers.push(userData)
               })
-
               commit('setUsers', {users: allUsers})
-
               //ダッシュボードに遷移
               router.push('/dashboard')
             })
@@ -101,7 +92,6 @@ export default new Vuex.Store({
         //ユーザネームと投げ銭残高の取得
         const uidRef = db.collection('users').doc(uid)
         uidRef.get().then((doc) => {
-
           if(!doc.exists) {
             console.log('No such document!')
             return
@@ -109,7 +99,6 @@ export default new Vuex.Store({
 
           const loginUserName = doc.data().userName
           const loginUserAmount = doc.data().amount
-
           commit('setUserData', {email: payload.email, password: payload.password, uid: uid, userName: loginUserName, amount: loginUserAmount})
         })
         .catch((error) => {
@@ -120,23 +109,14 @@ export default new Vuex.Store({
         db.collection('users')
           .get()
           .then((querySnapshot) => {
-
-            const allUsers = []
-
-            querySnapshot.forEach((doc) => {
-
-              const userData = {
+            const allUsers = querySnapshot.docs.map(doc => {
+              return {
                 uid: doc.id,
                 userName: doc.data().userName,
                 amount: doc.data().amount
               }
-
-              allUsers.push(userData)
-              
             })
-
             commit('setUsers', {users: allUsers})
-
             //ダッシュボードに遷移
             router.push('/dashboard')
           })
@@ -151,9 +131,7 @@ export default new Vuex.Store({
     logout({commit}) {
       auth.signOut()
       .then(() => {
-
         commit('resetUserData')
-
         //ログイン画面に遷移
         router.push('/')
       })
