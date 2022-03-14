@@ -39,6 +39,8 @@ export default new Vuex.Store({
       state.userName = ''
       state.amount = ''
       state.users = ''
+      state.recipientUid = ''
+      state.recipientAmount = ''
     },
     setUsers(state, payload) {
       state.users = payload.users
@@ -163,37 +165,44 @@ export default new Vuex.Store({
       //更新予定の残高
       const updatedAmount = amount - sendingTipAmount
       const updatedRecipientAmount = recipientAmount + sendingTipAmount
-
-      //自分の残高を反映
+      //自分の残高、投げ銭送付先の残高更新
       const uidRef = db.collection('users').doc(userUid)
-      uidRef.update({amount: updatedAmount})
-        .then(() => {
-          commit('updateAmount', {amount:updatedAmount })
-          //送付相手の残高を反映
-          const recipientUidRef = db.collection('users').doc(recipientUid)
-          recipientUidRef.update({amount: updatedRecipientAmount})
-            .then(() => {
-              commit('resetRecipientData')
-              //全てのユーザと残高を取得、更新
-                db.collection('users')
-                .get()
-                .then((querySnapshot) => {
-                  const allUsers = querySnapshot.docs.map(doc => {
-                    return {
-                      uid: doc.id,
-                      userName: doc.data().userName,
-                      amount: doc.data().amount
-                    }
-                  })
-                  commit('setUsers', {users: allUsers})
-                })
-                .catch((error) => {
-                  console.log('Error getting users document:', error)
-                })
+      const recipientUidRef = db.collection('users').doc(recipientUid)
+      db.runTransaction((transaction) => {
+        transaction.get(uidRef).then((uidRefDoc) => {
+          if(!uidRefDoc) {
+            throw 'Document does not exist!'
+          }
+          transaction.update(uidRef, {amount: updatedAmount})
+        })
+        return transaction.get(recipientUidRef).then((recipientUidRefDoc) => {
+          if(!recipientUidRefDoc) {
+            throw 'Document does not exist!'
+          }
+          transaction.update(recipientUidRef, {amount: updatedRecipientAmount})
+        })
+      }).then(() => {
+        commit('updateAmount', {amount:updatedAmount })
+        commit('resetRecipientData')
+
+        //全てのユーザと残高を取得、更新
+        db.collection('users')
+        .get()
+        .then((querySnapshot) => {
+          const allUsers = querySnapshot.docs.map(doc => {
+            return {
+              uid: doc.id,
+              userName: doc.data().userName,
+              amount: doc.data().amount
+            }
+          })
+          commit('setUsers', {users: allUsers})
         })
         .catch((error) => {
-          console.log('Error update document:', error)
+          console.log('Error getting users document:', error)
         })
+      }).catch((error) => {
+        console.log('Error update document:', error)
       })
     }
   },
