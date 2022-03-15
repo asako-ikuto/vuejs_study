@@ -18,7 +18,7 @@
           <tr v-for="(user, id) in users" v-bind:key="id">
             <td class="pt-2 pb-2" width="60%"><p class="is-size-5">{{user.userName}}</p></td>
             <td class="pt-2 pb-2"><button class="button is-primary is-small" @click="showAmountContent(id)">walletを見る</button></td>
-            <td class="pt-2 pb-2"><button class="button is-primary is-small">送る</button></td>  
+            <td class="pt-2 pb-2"><button class="button is-primary is-small" @click="showSendContent(id)">送る</button></td>  
           </tr>
         </tbody>  
     </table>
@@ -33,6 +33,18 @@
         </div>
       </div>
     </div>
+    <!--他のユーザに投げ銭送付モーダル -->
+    <div class="overlay" v-if="isShowsendContent">
+      <div id="send-content">
+        <div class="pt-2">あなたの残高：{{ this.$store.getters.amount }}</div>
+        <p>送る金額</p>
+        <div class="p-4"><input class="input" type="text" v-model="sendingTipAmount"></div>
+        <div class="content-footer has-background-grey-lighter p-1">
+          <p><button class="button is-danger is-small" @click="sendSocialTip()">送信</button></p>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -44,8 +56,10 @@ export default {
   data() {
     return {
       isShowAmountContent: false,
+      isShowsendContent: false,
       otherUserName: '',
-      otherUserAmount: ''
+      otherUserAmount: '',
+      sendingTipAmount: ''
     };
   },
   computed: {
@@ -59,12 +73,33 @@ export default {
     },
     showAmountContent(userId) {
       this.isShowAmountContent = true
-
       this.otherUserName = this.$store.getters.otherUsers[userId].userName
       this.otherUserAmount = this.$store.getters.otherUsers[userId].amount
     },
     hideAmountContent() {
       this.isShowAmountContent = false
+    },
+    showSendContent(recipientId) {
+      this.isShowsendContent = true
+      const recipientUid = this.$store.getters.otherUsers[recipientId].uid
+      const recipientAmount = this.$store.getters.otherUsers[recipientId].amount
+      this.$store.commit('setRecipientData', {recipientUid: recipientUid, recipientAmount: recipientAmount})
+    },
+    sendSocialTip() {
+      const sendingTipAmount = parseFloat(this.sendingTipAmount)
+      const recipientAmount = parseFloat(this.$store.getters.recipientAmount)
+      const amount = parseFloat(this.$store.getters.amount)
+
+      if(sendingTipAmount < 0 || sendingTipAmount > amount || isNaN(sendingTipAmount) || sendingTipAmount == ''){
+        return 
+      }
+      this.isShowsendContent = false
+      this.$store.dispatch('sendSocialTip', {sendingTipAmount: sendingTipAmount, 
+                                             recipientUid: this.$store.getters.recipientUid,
+                                             recipientAmount: recipientAmount,  
+                                             userUid: this.$store.getters.userUid,
+                                             amount: amount})
+      this.sendingTipAmount = ''
     }
   }
 }
@@ -83,8 +118,12 @@ export default {
   align-items: flex-end;
   justify-content: center;
 }
-
 #amount-content {
+  z-index: 2;
+  width: 200px;
+  background: #fff
+}
+#send-content {
   z-index: 2;
   width: 200px;
   background: #fff
